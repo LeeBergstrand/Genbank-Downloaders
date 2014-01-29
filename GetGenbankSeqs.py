@@ -44,7 +44,7 @@ def getSeqRecords(seqList):
 #==============================================================================================================================
 # Main program code:
 	
-# House keeping:
+# House keeping...
 argsCheck(4)
 	
 # Stores file one for input checking.
@@ -71,37 +71,47 @@ seqList = sequences.splitlines() # Splits string into a list. Each element is a 
 print "You have listed", len(seqList), "sequences. They are:"
 print sequences + "\n\n"
 	
+SeqRecords = getSeqRecords(seqList) # Gets sequence record objects from sequence list.
+		
+# Attempted to crearte to output file.
 try:
 	writeFile = open(outFile, "w") 	
+	print "Writing sequences to file..."
 except IOError:
-		print "Failed to create " + outFile
-		exit(1)
-		
-SeqRecords = getSeqRecords(seqList)
-		
-print "Writing sequences to file..."
-try:
-	for x in range(0, len(SeqRecords)): # For each sequence
-		features = SeqRecords[x].features # Each sequence has a list (called features) that stores seqFeature objects.
-		for y in range(0, len(features)): # For each feature on the sequence
-			if features[y].type == "CDS": # CDS means coding sequence (These are the only feature we're interested in)
-				featQualifers = features[y].qualifiers # Each feature contains a dictionary called quailifiers which contains data about         
-				                                       # the sequence feature (for example the translation)
-				
-				# Gets the required qualifers. Uses featQualifers.get to return the quatifer or a default value if the quatifer				# is not found. Calls strip to remove unwanted brackets and ' from quantifer before storing it as a string.
-				protein_id = str(featQualifers.get('protein_id','no_protein_id')).strip('\'[]')
-				if protein_id == 'no_protein_id':
-					continue # Skips the iteration if protien has no id.
-				gene = str(featQualifers.get('gene','no_gene_name')).strip('\'[]')
-				product = str(featQualifers.get('product','no_product_name')).strip('\'[]')
-				translated_protein = str(featQualifers.get('translation','no_translation')).strip('\'[]')
-				
-				fasta = ">" + protein_id + " " + gene + "-" + product + "\n" + translated_protein + "\n"
+	print "Failed to create " + outFile
+	exit(1)	
+
+# Loops through sequence records and extracts required information about protein annotions.
+for x in range(0, len(SeqRecords)): # For each sequence
+	features = SeqRecords[x].features # Each sequence has a list (called features) that stores seqFeature objects.
+	for y in range(0, len(features)): # For each feature on the sequence
+		if features[y].type == "CDS": # CDS means coding sequence (These are the only feature we're interested in)
+			featQualifers = features[y].qualifiers # Each feature contains a dictionary called quailifiers which contains data about         
+			                                       # the sequence feature (for example the translation)
+			
+			# Gets the required qualifers. Uses featQualifers.get to return the quatifer or a default value if the quatifer			# is not found. Calls strip to remove unwanted brackets and ' from quantifer before storing it as a string.
+			protein_id = str(featQualifers.get('protein_id','no_protein_id')).strip('\'[]')
+			if protein_id == 'no_protein_id':
+				continue # Skips the iteration if protien has no id.
+			gene = str(featQualifers.get('gene','no_gene_name')).strip('\'[]')
+			product = str(featQualifers.get('product','no_product_name')).strip('\'[]')
+			translated_protein = str(featQualifers.get('translation','no_translation')).strip('\'[]')
+			
+			fasta = ">" + protein_id + " " + gene + "-" + product + "\n" + translated_protein + "\n"
+			
+			# Attempted to write to output file.
+			try:
 				writeFile.write(fasta)
+			except IOError:
+				print "Failed to write to " + outFile
+				exit(1)	
+
+# Attempted to close to output file.
+try:					
 	writeFile.close()
 	print "File writing complete."
 except IOError:
-	print "Failed to write to output file " + outFile
+	print "Failed to create/write to " + outFile
 	exit(1)	
 	
 print "Done!"
