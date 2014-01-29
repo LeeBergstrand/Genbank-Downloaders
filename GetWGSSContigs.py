@@ -11,7 +11,7 @@ import sys
 import re
 from Bio import SeqIO
 from Bio import Entrez
-Entrez.email = "lee.h.bergstrand@gmail.com" # Temporary, script will request user email in later version.
+Entrez.email = "" # Temporary, script will request user email in later version.
 
 # Regexs for contig accession extraction
 WGSSRangeRegex = re.compile("/wgs=\['{1}[a-zA-Z0-9]{12,14}',[ ]{1}'[a-zA-Z0-9]{12,14}']{1}")

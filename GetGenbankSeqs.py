@@ -6,26 +6,52 @@
 #
 #           This script requires the Biopython module: http://biopython.org/wiki/Download
 #  
-# Usage: getGenbankSeqs.py <sequences.txt> <outputName.fasta>
-# Example: getGenbankSeqs.py mySeqs.txt mySeqs.fasta 
+# Usage: getGenbankSeqs.py <sequences.txt> <outputName.fasta> <email@mail.com>
+# Example: getGenbankSeqs.py mySeqs.txt mySeqs.fasta JBro@YOLO.com
 #----------------------------------------------------------------------------------------
+#==============================================================================================================================
+#Imports:
+	
 import sys
 from Bio import SeqIO
 from Bio import Entrez
-Entrez.email = "lee.h.bergstrand@gmail.com" # Temporary, script will request user email in later version.
+#==============================================================================================================================
+# Functions:
 
-# If in proper number of arguments are passed gives instructions on proper use.
-if len(sys.argv) < 3 or len(sys.argv) > 3:
-	print "Sequence Downloader"
-	print "By Lee Bergstrand\n"
-	print "Usage: " + sys.argv[0] + " <sequences.txt> <outputName.fasta>\n"
-	print "Examples:" + sys.argv[0] + " mySeqs.txt mySeqs.fasta"
-	exit(1) # Aborts program. (exit(1) indicates that an error occured)
+# 1: Checks if in proper number of arguments are passed gives instructions on proper use.
+def argsCheck(numArgs):
+	if len(sys.argv) < numArgs or len(sys.argv) > numArgs:
+		print "Sequence Downloader"
+		print "By Lee Bergstrand\n"
+		print "Usage: " + sys.argv[0] + " <sequences.txt> <outputName.fasta> <email@mail.com>\n"
+		print "Examples:" + sys.argv[0] + " mySeqs.txt mySeqs.fasta JBro@YOLO.com"
+		exit(1) # Aborts program. (exit(1) indicates that an error occured)
 
+# 2: When passed an array of accessions of NCBI returns a list of sequence objects matching those accessions.
+def getSeqRecords(seqList):
+	try: 
+		print "Requesting sequence data from genbank..."
+		handle = Entrez.efetch(db="protein", id=seqList, rettype="gb", retmode="genbank") # Gets genbank files and stores them.
+		print "Starting download..."
+		SeqRecords=list(SeqIO.parse(handle,"genbank")) # Creates a list of SeqRecord objects from genbank files stored in handle.
+		print "Download Complete."
+		handle.close() # Closes handle since it is no longer needed.
+	except IOError:
+		print "Failed to connect to NCBI server. "
+		exit(1)
+		
+	return SeqRecords
+#==============================================================================================================================
+# Main program code:
+	
+# House keeping:
+argsCheck(4)
+	
 # Stores file one for input checking.
 print ">> Opening sequence list..."
 inFile  = sys.argv[1]
 outFile = sys.argv[2]
+Entrez.email = sys.argv[3]
 
 # File extension check
 if not inFile.endswith(".txt"):
@@ -45,22 +71,13 @@ seqList = sequences.splitlines() # Splits string into a list. Each element is a 
 print "You have listed", len(seqList), "sequences. They are:"
 print sequences + "\n\n"
 	
-try: 
-	print "Requesting sequence data from genbank..."
-	handle = Entrez.efetch(db="protein", id=seqList, rettype="gb", retmode="genbank") # Gets genbank files and stores them.
-	print "Starting download..."
-	SeqRecords=list(SeqIO.parse(handle,"genbank")) # Creates a list of SeqRecord objects from genbank files stored in handle.
-	print "Download Complete."
-	handle.close() # Closes handle since it is no longer needed.
-except IOError:
-	print "Failed to connect to NCBI server. "
-	exit(1)
-
 try:
 	writeFile = open(outFile, "w") 	
 except IOError:
 		print "Failed to create " + outFile
 		exit(1)
+		
+SeqRecords = getSeqRecords(seqList)
 		
 print "Writing sequences to file..."
 try:
@@ -88,3 +105,6 @@ except IOError:
 	exit(1)	
 	
 print "Done!"
+
+
+	
