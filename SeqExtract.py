@@ -41,8 +41,8 @@ def getProtienAnnotationFasta(SeqRecords):
 		features = SeqRecords[x].features # Each sequence has a list (called features) that stores seqFeature objects.
 		for y in range(0, len(features)): # For each feature on the sequence
 			if features[y].type == "CDS": # CDS means coding sequence (These are the only feature we're interested in)
-				featQualifers = features[y].qualifiers # Each feature contains a dictionary called quailifiers which contains data about         
-				                                       # the sequence feature (for example the translation)
+				featQualifers = features[y].qualifiers # Each feature contains a dictionary called quailifiers which contains           
+				                                       # data about the sequence feature (for example the translation)
 				
 				# Gets the required qualifers. Uses featQualifers.get to return the quatifer or a default value if the quatifer				# is not found. Calls strip to remove unwanted brackets and ' from quantifer before storing it as a string.
 				protein_id = str(featQualifers.get('protein_id','no_protein_id')).strip('\'[]')
@@ -55,10 +55,21 @@ def getProtienAnnotationFasta(SeqRecords):
 				fasta.append((">" + protein_id + " " + gene + "-" + product + "\n" + translated_protein + "\n"))
 	return fasta
 #------------------------------------------------------------------------------------------------------------
+# 4: Checks if genome is a WGSS project. 
+def isSSProject(sequence):
+	WGSSProjectRegex = re.compile("[a-zA-Z]{4,6}\d{8,10}")
+	m = WGSSProjectRegex.match(sequence.id) 
+	if m:
+		matched = True
+	else:
+		matched = False
+	return matched
 
-# 4: When passed an array of sequence record objects returns an array of fasta strings for each annotation.
+#------------------------------------------------------------------------------------------------------------
+# 5: When passed an array of sequence record objects returns an array of fasta strings for each annotation.
+#    This implimenation is "quick and dirty" shall be replaced in later versions. 
 def extractContigs(seqList):
-	# Regexs for contig accession extraction
+	# Regexs for contig accession extraction (These could be pulled out of function so they are only compiled once.)
 	WGSSRangeRegex = re.compile("/wgs=\['{1}[a-zA-Z0-9]{12,14}',[ ]{1}'[a-zA-Z0-9]{12,14}']{1}")
 	WGSSRangeAccessionsRegex = re.compile("[a-zA-Z0-9]{12,14}")
 	AccessionBaseRegex = re.compile("^[a-zA-Z]{4}\d{2}")

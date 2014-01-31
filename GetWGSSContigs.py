@@ -10,13 +10,22 @@
 
 from SeqExtract import entrezEmail	
 from SeqExtract import extractContigs
+from SeqExtract import getSeqRecords
+from SeqExtract import isSSProject
 
 seqList = ["CBMO000000000"]
 seqList.append("BAEC00000000")
+seqList.append("CP003080")
 
-entrezEmail("leemacboy@gmail.com")
+entrezEmail("")
+SeqRecords = getSeqRecords(seqList)
 
-print extractContigs(seqList)
+for x in SeqRecords:
+	print x.id
+	print isSSProject(x)
+#print extractContigs(seqList)
+
+
 
 
 
