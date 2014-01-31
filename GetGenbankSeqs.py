@@ -9,13 +9,14 @@
 # Usage: getGenbankSeqs.py <sequences.txt> <outputName.fasta> <email@mail.com>
 # Example: getGenbankSeqs.py mySeqs.txt mySeqs.fasta JBro@YOLO.com
 #----------------------------------------------------------------------------------------
-#==============================================================================================================================
+#===========================================================================================================
 #Imports:
 	
 import sys
-from Bio import SeqIO
-from Bio import Entrez
-#==============================================================================================================================
+from SeqExtract import entrezEmail
+from SeqExtract import getSeqRecords
+from SeqExtract import getProtienAnnotationFasta
+#===========================================================================================================
 # Functions:
 
 # 1: Checks if in proper number of arguments are passed gives instructions on proper use.
@@ -26,32 +27,18 @@ def argsCheck(numArgs):
 		print "Usage: " + sys.argv[0] + " <sequences.txt> <outputName.fasta> <email@mail.com>\n"
 		print "Examples:" + sys.argv[0] + " mySeqs.txt mySeqs.fasta JBro@YOLO.com"
 		exit(1) # Aborts program. (exit(1) indicates that an error occured)
-
-# 2: When passed an array of accessions of NCBI returns a list of sequence objects matching those accessions.
-def getSeqRecords(seqList):
-	try: 
-		print "Requesting sequence data from genbank..."
-		handle = Entrez.efetch(db="protein", id=seqList, rettype="gb", retmode="genbank") # Gets genbank files and stores them.
-		print "Starting download..."
-		SeqRecords=list(SeqIO.parse(handle,"genbank")) # Creates a list of SeqRecord objects from genbank files stored in handle.
-		print "Download Complete."
-		handle.close() # Closes handle since it is no longer needed.
-	except IOError:
-		print "Failed to connect to NCBI server. "
-		exit(1)
-		
-	return SeqRecords
-#==============================================================================================================================
+#===========================================================================================================
 # Main program code:
 	
 # House keeping...
-argsCheck(4)
+argsCheck(4) # Checks if the number of arguments are correct.
+entrezEmail(sys.argv[3]) # Sets up arguments email require for genbank file extraction.
 	
 # Stores file one for input checking.
 print ">> Opening sequence list..."
 inFile  = sys.argv[1]
 outFile = sys.argv[2]
-Entrez.email = sys.argv[3]
+
 
 # File extension check
 if not inFile.endswith(".txt"):
@@ -71,50 +58,22 @@ seqList = sequences.splitlines() # Splits string into a list. Each element is a 
 print "You have listed", len(seqList), "sequences. They are:"
 print sequences + "\n\n"
 	
-SeqRecords = getSeqRecords(seqList) # Gets sequence record objects from sequence list.
-		
+seqRecords = getSeqRecords(seqList) # Aquires list of sequence record objects from NCBI us sequence list as reference.
+fasta = getProtienAnnotationFasta(seqRecords) # Builds list fasta files.		
 # Attempted to crearte to output file.
 try:
 	writeFile = open(outFile, "w") 	
 	print "Writing sequences to file..."
+	for y in  range(0, len(fasta)):
+		writeFile.write(fasta[y])
+	writeFile.close()
 except IOError:
 	print "Failed to create " + outFile
 	exit(1)	
-
-# Loops through sequence records and extracts required information about protein annotions.
-for x in range(0, len(SeqRecords)): # For each sequence
-	features = SeqRecords[x].features # Each sequence has a list (called features) that stores seqFeature objects.
-	for y in range(0, len(features)): # For each feature on the sequence
-		if features[y].type == "CDS": # CDS means coding sequence (These are the only feature we're interested in)
-			featQualifers = features[y].qualifiers # Each feature contains a dictionary called quailifiers which contains data about         
-			                                       # the sequence feature (for example the translation)
-			
-			# Gets the required qualifers. Uses featQualifers.get to return the quatifer or a default value if the quatifer			# is not found. Calls strip to remove unwanted brackets and ' from quantifer before storing it as a string.
-			protein_id = str(featQualifers.get('protein_id','no_protein_id')).strip('\'[]')
-			if protein_id == 'no_protein_id':
-				continue # Skips the iteration if protien has no id.
-			gene = str(featQualifers.get('gene','no_gene_name')).strip('\'[]')
-			product = str(featQualifers.get('product','no_product_name')).strip('\'[]')
-			translated_protein = str(featQualifers.get('translation','no_translation')).strip('\'[]')
-			
-			fasta = ">" + protein_id + " " + gene + "-" + product + "\n" + translated_protein + "\n"
-			
-			# Attempted to write to output file.
-			try:
-				writeFile.write(fasta)
-			except IOError:
-				print "Failed to write to " + outFile
-				exit(1)	
-
-# Attempted to close to output file.
-try:					
-	writeFile.close()
-	print "File writing complete."
-except IOError:
-	print "Failed to create/write to " + outFile
-	exit(1)	
 	
 print "Done!"
+
+
 
 
 	
