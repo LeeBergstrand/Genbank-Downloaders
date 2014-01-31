@@ -39,7 +39,6 @@ print ">> Opening sequence list..."
 inFile  = sys.argv[1]
 outFile = sys.argv[2]
 
-
 # File extension check
 if not inFile.endswith(".txt"):
 	print "[Warning] " + inFile + " may not be a txt file!"
