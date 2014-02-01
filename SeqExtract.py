@@ -55,6 +55,7 @@ def getProtienAnnotationFasta(SeqRecords):
 				fasta.append((">" + protein_id + " " + gene + "-" + product + "\n" + translated_protein + "\n"))
 	return fasta
 #------------------------------------------------------------------------------------------------------------
+
 # 4: Checks if genome is a WGSS project. 
 def isSSProject(sequence):
 	WGSSProjectRegex = re.compile("[a-zA-Z]{4,6}\d{8,10}")
@@ -64,7 +65,6 @@ def isSSProject(sequence):
 	else:
 		matched = False
 	return matched
-
 #------------------------------------------------------------------------------------------------------------
 # 5: When passed an array of sequence record objects returns an array of fasta strings for each annotation.
 #    This implimenation is "quick and dirty" shall be replaced in later versions. 
@@ -100,6 +100,7 @@ def extractContigs(seqList):
 		if accessionLength != 12:
 			zeroOffset = accessionLength - 6 # 6 is the length of the standard accession base.
 		
+		# Creates accession list
 		for x in range(WGSSRangeMin, (WGSSRangeMax + 1)):
 			contigAccession = AccessionBase
 			contigAccession += ("{0:0" + str(zeroOffset) + "d}").format(x) # Uses zero offset to make accessions proper length.

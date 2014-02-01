@@ -31,13 +31,12 @@ def argsCheck(numArgs):
 # Main program code:
 	
 # House keeping...
-argsCheck(4) # Checks if the number of arguments are correct.
+argsCheck(3) # Checks if the number of arguments are correct.
 entrezEmail(sys.argv[3]) # Sets up arguments email require for genbank file extraction.
 	
 # Stores file one for input checking.
 print ">> Opening sequence list..."
 inFile  = sys.argv[1]
-outFile = sys.argv[2]
 
 # File extension check
 if not inFile.endswith(".txt"):
