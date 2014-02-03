@@ -31,7 +31,7 @@ def getSeqRecords(seqList):
 		exit(1)
 	return SeqRecords
 #------------------------------------------------------------------------------------------------------------
-# 3: When passed an array of sequence record objects returns an array of fasta strings for each annotation.
+# 3: When passed a sequence record object returns an array of fasta strings for each annotation.
 def getProtienAnnotationFasta(seqRecord):
 	fasta = []
 	features = seqRecord.features # Each sequence has a list (called features) that stores seqFeature objects.
@@ -50,7 +50,36 @@ def getProtienAnnotationFasta(seqRecord):
 			fasta.append((">" + protein_id + " " + gene + "-" + product + "\n" + translated_protein + "\n"))
 	return fasta
 #------------------------------------------------------------------------------------------------------------
-# 4: Checks if genome is a WGSS project. 
+# 4: When passed a sequence record object returns a list of csv row list for each annotation.
+def getProtienAnnotationCSV(seqRecord):	
+	csvRowSet = [] # Master list of all rows.
+	for feature in seqRecord.features:
+		if feature.type == "CDS":
+			csvRow = [] # Created new list for each row. (This is for compatibility with the csv module's row write)
+			CDSLocal = feature.location # Gets the feature location
+			featQualifers = feature.qualifiers # Gets sequence quantifiers.
+			
+			# Gets sequence quantifiers.
+			gene       = str(featQualifers.get('gene','no_gene_name')).strip('\'[]')
+			product    = str(featQualifers.get('product','no_product_name')).strip('\'[]')
+			proteinID = str(featQualifers.get('protein_id','no_protein_id')).strip('\'[]')
+			if proteinID == 'no_protein_id':
+				continue # Skips the iteration if protien has no id.
+			# Append quantifers and other information to the csv row list.
+			csvRow.append(seqRecord.annotations["organism"])
+			csvRow.append(seqRecord.id)
+			csvRow.append(proteinID)
+			csvRow.append(gene)
+			csvRow.append(str(CDSLocal.start))
+			csvRow.append(str(CDSLocal.end))
+			csvRow.append(str(CDSLocal.strand))
+			csvRow.append(product)
+			
+			csvRowSet.append(csvRow) # Appends the csvRow list to the master list of rows.
+	
+	return csvRowSet
+#------------------------------------------------------------------------------------------------------------
+# 5: Checks if genome is a WGSS project. 
 def isSSProject(sequence):
 	WGSSProjectRegex = re.compile("[a-zA-Z]{4,6}\d{8,10}")
 	m = WGSSProjectRegex.match(sequence.id) 
@@ -60,7 +89,7 @@ def isSSProject(sequence):
 		matched = False
 	return matched
 #------------------------------------------------------------------------------------------------------------
-# 5: When passed an array of sequence record objects returns an array of fasta strings for each annotation.
+# 6: When passed an array of sequence record objects returns an array of fasta strings for each annotation.
 #    This implimenation is "quick and dirty" shall be replaced in later versions. 
 def extractContigs(seqList):
 	# Regexs for contig accession extraction (These could be pulled out of function so they are only compiled once.)

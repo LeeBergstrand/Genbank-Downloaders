@@ -13,11 +13,13 @@
 #Imports:
 	
 import sys
+import csv
 from SeqExtract import entrezEmail
 from SeqExtract import getSeqRecords
 from SeqExtract import isSSProject
 from SeqExtract import extractContigs
 from SeqExtract import getProtienAnnotationFasta
+from SeqExtract import getProtienAnnotationCSV
 #===========================================================================================================
 # Functions:
 
@@ -62,10 +64,14 @@ seqRecords = getSeqRecords(seqList) # Aquires list of sequence record objects fr
 #fasta = getProtienAnnotationFasta(seqRecords[0]) # Builds list fasta files.		
 for sequence in seqRecords:
 	outFile = sequence.id + ".faa"
+	outCSV  = sequence.id + ".csv"
 	try:
 		# Attempted to crearte to output file.
 		writeFile = open(outFile, "w") 	
 		print "Writing " + outFile + " to file..."
+		csvFile = open(outCSV, "w") 	
+		CSVWriter = csv.writer(csvFile)
+		print "Writing " + outCSV + " to file..."
 		
 		#Checks if the accession leads to a WGSS project. 
 		#If accession is a WGSS project... 
@@ -74,38 +80,23 @@ for sequence in seqRecords:
 			contigRecords = getSeqRecords(contigList) # Extract sequence record object for each contig
 			for contig in contigRecords:
 				fasta = getProtienAnnotationFasta(contig) # Builds list fasta files.
+				csvRows = getProtienAnnotationCSV(contig) # Builds list of csv rows.
 				for annotation in fasta:
 					writeFile.write(annotation)	
+				for row in csvRows:
+					CSVWriter.writerow(row)
 		#If accession is a regular genome... 
 		else:	
 			fasta = getProtienAnnotationFasta(sequence) # Builds list fasta files.
+			csvRows = getProtienAnnotationCSV(sequence) # Builds list of csv rows.
 			for annotation in fasta:
-				writeFile.write(annotation)		
+				writeFile.write(annotation)	
+			for row in csvRows:
+				CSVWriter.writerow(row)	
 		writeFile.close()
+		csvFile.close()
 	except IOError:
 		print "Failed to create " + outFile
 		exit(1)	
 	
 print "Done!"
-
-
-
-
-
-# Attempted to crearte to output file.
-#try:
-#	writeFile = open(outFile, "w") 	
-#	print "Writing sequences to file..."
-#	for y in  range(0, len(fasta)):
-#		writeFile.write(fasta[y])
-#	writeFile.close()
-#except IOError:
-#	print "Failed to create " + outFile
-#	exit(1)	
-	
-#print "Done!"
-
-
-
-
-	
