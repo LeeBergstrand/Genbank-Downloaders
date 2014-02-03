@@ -17,7 +17,6 @@ from Bio import Entrez
 def entrezEmail(email):
 	Entrez.email = email	
 #------------------------------------------------------------------------------------------------------------
-				
 # 2: When passed an array of accessions of NCBI returns a list of sequence objects matching those accessions.
 def getSeqRecords(seqList):
 	try: 
@@ -32,30 +31,25 @@ def getSeqRecords(seqList):
 		exit(1)
 	return SeqRecords
 #------------------------------------------------------------------------------------------------------------
-	
 # 3: When passed an array of sequence record objects returns an array of fasta strings for each annotation.
-def getProtienAnnotationFasta(SeqRecords):
+def getProtienAnnotationFasta(seqRecord):
 	fasta = []
-	# Loops through sequence records and extracts required information about protein annotions.
-	for x in range(0, len(SeqRecords)): # For each sequence
-		features = SeqRecords[x].features # Each sequence has a list (called features) that stores seqFeature objects.
-		for y in range(0, len(features)): # For each feature on the sequence
-			if features[y].type == "CDS": # CDS means coding sequence (These are the only feature we're interested in)
-				featQualifers = features[y].qualifiers # Each feature contains a dictionary called quailifiers which contains           
-				                                       # data about the sequence feature (for example the translation)
-				
-				# Gets the required qualifers. Uses featQualifers.get to return the quatifer or a default value if the quatifer				# is not found. Calls strip to remove unwanted brackets and ' from quantifer before storing it as a string.
-				protein_id = str(featQualifers.get('protein_id','no_protein_id')).strip('\'[]')
-				if protein_id == 'no_protein_id':
-					continue # Skips the iteration if protien has no id.
-				gene = str(featQualifers.get('gene','no_gene_name')).strip('\'[]')
-				product = str(featQualifers.get('product','no_product_name')).strip('\'[]')
-				translated_protein = str(featQualifers.get('translation','no_translation')).strip('\'[]')
-				
-				fasta.append((">" + protein_id + " " + gene + "-" + product + "\n" + translated_protein + "\n"))
+	features = seqRecord.features # Each sequence has a list (called features) that stores seqFeature objects.
+	for feature in features: # For each feature on the sequence
+		if feature.type == "CDS": # CDS means coding sequence (These are the only feature we're interested in)
+			featQualifers = feature.qualifiers # Each feature contains a dictionary called quailifiers which contains           
+			                                   # data about the sequence feature (for example the translation)
+			
+			# Gets the required qualifers. Uses featQualifers.get to return the quatifer or a default value if the quatifer			# is not found. Calls strip to remove unwanted brackets and ' from quantifer before storing it as a string.
+			protein_id = str(featQualifers.get('protein_id','no_protein_id')).strip('\'[]')
+			if protein_id == 'no_protein_id':
+				continue # Skips the iteration if protien has no id.
+			gene    = str(featQualifers.get('gene','no_gene_name')).strip('\'[]')
+			product = str(featQualifers.get('product','no_product_name')).strip('\'[]')
+			translated_protein = str(featQualifers.get('translation','no_translation')).strip('\'[]')
+			fasta.append((">" + protein_id + " " + gene + "-" + product + "\n" + translated_protein + "\n"))
 	return fasta
 #------------------------------------------------------------------------------------------------------------
-
 # 4: Checks if genome is a WGSS project. 
 def isSSProject(sequence):
 	WGSSProjectRegex = re.compile("[a-zA-Z]{4,6}\d{8,10}")

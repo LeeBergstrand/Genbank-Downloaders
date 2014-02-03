@@ -19,7 +19,7 @@ seqList.append("EU013931")
 seqList.append("DQ345780")
 #seqList.append("AVCO01000001")
 
-entrezEmail("lee.h.bergstrand@gmail.com")
+entrezEmail("")
 SeqRecords = getSeqRecords(seqList)
 
 for x in SeqRecords:

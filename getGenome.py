@@ -15,7 +15,6 @@
 import sys
 from SeqExtract import entrezEmail
 from SeqExtract import getSeqRecords
-from SeqExtract import getProtienAnnotationFasta
 from SeqExtract import isSSProject
 from SeqExtract import extractContigs
 #===========================================================================================================
