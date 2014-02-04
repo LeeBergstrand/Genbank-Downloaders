@@ -62,7 +62,8 @@ def getProtienAnnotationCSV(seqRecord):
 			# Gets sequence quantifiers.
 			gene       = str(featQualifers.get('gene','no_gene_name')).strip('\'[]')
 			product    = str(featQualifers.get('product','no_product_name')).strip('\'[]')
-			proteinID = str(featQualifers.get('protein_id','no_protein_id')).strip('\'[]')
+			proteinID  = str(featQualifers.get('protein_id','no_protein_id')).strip('\'[]')
+			locus      = str(featQualifers.get('locus_tag','no_locus_tag')).strip('\'[]')
 			if proteinID == 'no_protein_id':
 				continue # Skips the iteration if protien has no id.
 			# Append quantifers and other information to the csv row list.
@@ -73,6 +74,7 @@ def getProtienAnnotationCSV(seqRecord):
 			csvRow.append(str(CDSLocal.start))
 			csvRow.append(str(CDSLocal.end))
 			csvRow.append(str(CDSLocal.strand))
+			csvRow.append(locus)
 			csvRow.append(product)
 			
 			csvRowSet.append(csvRow) # Appends the csvRow list to the master list of rows.
