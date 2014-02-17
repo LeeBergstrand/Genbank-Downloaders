@@ -1,16 +1,22 @@
 #!/usr/bin/env python 
 # Created by: Lee Bergstrand 
-# Descript: A simple program that takes a list of nucleotide genbank accesion numbers and  
+# Descript: A simple program that takes a list of nucleotide genbank accession numbers and  
 #           downloads the Coding Sequences (CDS) contained within the sequences linked to  
-#  			that accesion. Its then stores these CDSs in a within protien multi-sequence fasta. 
+#  			that accession. Its then stores these CDSs in a within protein multi-sequence fasta. 
+#           Also creates a CSV file containing some essential info about each CDS.
 #
 # Requirements: - This script requires the Biopython module: http://biopython.org/wiki/Download
-#               - All accestions must link to regular nucleotide genbank accesions (gene or genome),
-#                 However if a genome is shotgun sequenced you must provide the accestion to its Whole
-#                 Genome Shotgun Sequence project record.
+#               - This script requires the SeqExtract module (included in the Bio-Scripts repository)
+#               - All accessions must link to regular nucleotide genbank records (gene or genome),
+#                 however if a genome is shotgun sequenced you must provide the accession to its Whole
+#                 Genome Shotgun Sequence Project record.
+#               - Before using this script to access the NCBI's online resources please read the NCBI's 
+#                 Entrez User Requirements. If the NCBI finds you are abusing their systems, they can 
+#                 and will ban your access! Use the optional email parameter so the NCBI can contact 
+#                 you if there is a problem.
 #  
-# Usage: getGenbankSeqs.py <sequences.txt> <outputName.fasta> <email@mail.com>
-# Example: getGenbankSeqs.py mySeqs.txt mySeqs.fasta JBro@YOLO.com
+# Usage: getGenbankSeqs.py <sequences.txt> [email@mail.com]
+# Example: getGenbankSeqs.py mySeqs.txt JBro@YOLO.com
 #----------------------------------------------------------------------------------------
 #===========================================================================================================
 #Imports:
@@ -29,11 +35,16 @@ from SeqExtract import getProtienAnnotationCSV
 # 1: Checks if in proper number of arguments are passed gives instructions on proper use.
 def argsCheck(numArgs):
 	if len(sys.argv) < numArgs or len(sys.argv) > numArgs:
-		print "Coding Sequence"
+		print "Coding Sequence Downloader"
 		print "By Lee Bergstrand\n"
-		print "Usage: " + sys.argv[0] + " <sequences.txt> <outputName.fasta> <email@mail.com>\n"
-		print "Examples:" + sys.argv[0] + " mySeqs.txt mySeqs.fasta JBro@YOLO.com"
-		exit(1) # Aborts program. (exit(1) indicates that an error occured)
+		print "Usage: " + sys.argv[0] + " <sequences.txt> [email@mail.com]"
+		print "Examples: " + sys.argv[0] + " mySeqs.txt JBro@YOLO.com\n"
+		print "Please Note:"
+		print "Before using this script to access the NCBI's online resources please read the NCBI's" 
+		print "Entrez User Requirements. If the NCBI finds you are abusing their systems, they can" 
+		print "and will ban your access! Use the optional email parameter so the NCBI can contact" 
+		print "you if there is a problem."
+		exit(1) # Aborts program. (exit(1) indicates that an error occurred)
 #===========================================================================================================
 # Main program code:
 	
@@ -63,8 +74,8 @@ seqList = sequences.splitlines() # Splits string into a list. Each element is a 
 print "You have listed", len(seqList), "sequences. They are:"
 print sequences + "\n\n"
 	
-seqRecords = getSeqRecords(seqList) # Aquires list of sequence record objects from NCBI us sequence list as reference.
-#fasta = getProtienAnnotationFasta(seqRecords[0]) # Builds list fasta files.		
+seqRecords = getSeqRecords(seqList) # Acquires list of sequence record objects from NCBI using the sequence list as reference.
+		
 for sequence in seqRecords:
 	outFile = sequence.id + ".faa"
 	outCSV  = sequence.id + ".csv"
@@ -80,7 +91,7 @@ for sequence in seqRecords:
 		#If accession is a WGSS project... 
 		if isSSProject(sequence) == True:
 			contigList = extractContigs(sequence.id) # Extract all contig accessions. 
-			contigRecords = getSeqRecords(contigList) # Extract sequence record object for each contig
+			contigRecords = getSeqRecords(contigList) # Extract sequence record object for each contig.
 			for contig in contigRecords:
 				fasta = getProtienAnnotationFasta(contig) # Builds list fasta files.
 				csvRows = getProtienAnnotationCSV(contig) # Builds list of csv rows.

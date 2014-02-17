@@ -1,12 +1,20 @@
 #!/usr/bin/env python 
 # Created by: Lee Bergstrand 
-# Descript: A simple program that takes a list of genbank genome accesion numbers and downloads 
-#           the geneome as fasta formatted sequence. For shotgun sequenced data  it stores the 
-#           contigs in a mutiple sequence fasta file.
+# Descript: A simple program that takes a list of genbank nucleotide accession numbers and downloads 
+#           the associated sequences. Its stores genes or complete genomes as a nucleotide fasta file. 
+#           For shotgun sequenced data it stores the contigs in a multiple sequence nucleotide fasta file. 
 #
-#           This script requires the Biopython module: http://biopython.org/wiki/Download
+# Requirements: - This script requires the Biopython module: http://biopython.org/wiki/Download
+#               - This script requires the SeqExtract module (included in the Bio-Scripts repository)
+#               - All accessions must link to regular nucleotide genbank records (gene or genome),
+#                 however if a genome is shotgun sequenced you must provide the accession to its Whole
+#                 Genome Shotgun Sequence Project record.
+#               - Before using this script to access the NCBI's online resources please read the NCBI's 
+#                 Entrez User Requirements. If the NCBI finds you are abusing their systems, they can 
+#                 and will ban your access! Use the optional email parameter so the NCBI can contact 
+#                 you if there is a problem.
 #  
-# Usage: getGenbankSeqs.py <sequences.txt> <email@mail.com>
+# Usage: getGenbankSeqs.py <sequences.txt> [email@mail.com]
 # Example: getGenbankSeqs.py mySeqs.txt JBro@YOLO.com
 #----------------------------------------------------------------------------------------
 #===========================================================================================================
@@ -25,9 +33,14 @@ def argsCheck(numArgs):
 	if len(sys.argv) < numArgs or len(sys.argv) > numArgs:
 		print "Sequence Downloader"
 		print "By Lee Bergstrand\n"
-		print "Usage: " + sys.argv[0] + " <sequences.txt> <email@mail.com>\n"
-		print "Examples:" + sys.argv[0] + " mySeqs.txt JBro@YOLO.com"
-		exit(1) # Aborts program. (exit(1) indicates that an error occured)
+		print "Usage: " + sys.argv[0] + " <sequences.txt> [email@mail.com]"
+		print "Examples: " + sys.argv[0] + " mySeqs.txt JBro@YOLO.com\n"
+		print "Please Note:"
+		print "Before using this script to access the NCBI's online resources please read the NCBI's" 
+		print "Entrez User Requirements. If the NCBI finds you are abusing their systems, they can" 
+		print "and will ban your access! Use the optional email parameter so the NCBI can contact" 
+		print "you if there is a problem."
+		exit(1) # Aborts program. (exit(1) indicates that an error occurred)
 #===========================================================================================================
 # Main program code:
 	
@@ -43,7 +56,7 @@ inFile  = sys.argv[1]
 if not inFile.endswith(".txt"):
 	print "[Warning] " + inFile + " may not be a txt file!"
 
-# Reads sequence file list and stores it as a string object. Safely closes file.try:
+# Reads sequence file list and stores it as a string object. Safely closes file:
 try:	
 	with open(inFile,"r") as newFile:
 		sequences = newFile.read()
@@ -57,7 +70,7 @@ seqList = sequences.splitlines() # Splits string into a list. Each element is a 
 print "You have listed", len(seqList), "sequences. They are:"
 print sequences + "\n\n"
 	
-seqRecords = getSeqRecords(seqList) # Aquires list of sequence record objects from NCBI us sequence list as reference.
+seqRecords = getSeqRecords(seqList) # Acquires list of sequence record objects from NCBI using the sequence list as reference.
 
 for sequence in seqRecords:
 	outFile = sequence.id + ".fna"
@@ -70,7 +83,7 @@ for sequence in seqRecords:
 		# If accession is a WGSS project... 
 		if isSSProject(sequence) == True:
 			contigList = extractContigs(sequence.id) # Extract all contig accessions. 
-			contigRecords = getSeqRecords(contigList) # Extract sequence record object for each contig
+			contigRecords = getSeqRecords(contigList) # Extract sequence record object for each contig.
 			for contig in contigRecords:
 				writeFile.write(contig.format("fasta")) # Write each contig to the same file in fasta format.
 		# If accession is a regular genome... 

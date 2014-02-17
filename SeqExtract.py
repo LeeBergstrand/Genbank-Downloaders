@@ -1,8 +1,8 @@
 #!/usr/bin/env python 
 # Created by: Lee Bergstrand 
-# Descript: A module that contains functions that extract and modify genbanks records. 
+# Descript: A module that contains functions for extraction and genbank records. 
 #
-#           This module requires the Biopython module: http://biopython.org/wiki/Download
+# Requirements: - This module requires the Biopython module: http://biopython.org/wiki/Download
 #------------------------------------------------------------------------------------------------------------
 #============================================================================================================
 # Imports:
@@ -13,11 +13,11 @@ from Bio import Entrez
 #============================================================================================================
 # Functions:
 	
-# 1: Set up email.
+# 1: Sets up user email.
 def entrezEmail(email):
 	Entrez.email = email	
 #------------------------------------------------------------------------------------------------------------
-# 2: When passed an array of accessions of NCBI returns a list of sequence objects matching those accessions.
+# 2: When passed an array of accessions from NCBI it returns a list of sequence objects matching those accessions.
 def getSeqRecords(seqList):
 	try: 
 		print "Requesting sequence data from genbank..."
@@ -50,7 +50,7 @@ def getProtienAnnotationFasta(seqRecord):
 			fasta.append((">" + protein_id + " " + gene + "-" + product + "\n" + translated_protein + "\n"))
 	return fasta
 #------------------------------------------------------------------------------------------------------------
-# 4: When passed a sequence record object returns a list of csv row list for each annotation.
+# 4: When passed a sequence record object returns a list of csv rows. Each row is list containing info for each annotation.
 def getProtienAnnotationCSV(seqRecord):	
 	csvRowSet = [] # Master list of all rows.
 	for feature in seqRecord.features:
@@ -91,7 +91,7 @@ def isSSProject(sequence):
 		matched = False
 	return matched
 #------------------------------------------------------------------------------------------------------------
-# 6: When passed an array of sequence record objects returns an array of fasta strings for each annotation.
+# 6: When passed a list of sequence record objects returns an list of fasta strings for each annotation.
 #    This implimenation is "quick and dirty" shall be replaced in later versions. 
 def extractContigs(seqList):
 	# Regexs for contig accession extraction (These could be pulled out of function so they are only compiled once.)
