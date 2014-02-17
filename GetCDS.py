@@ -1,10 +1,13 @@
 #!/usr/bin/env python 
 # Created by: Lee Bergstrand 
-# Descript: A simple program that takes a list of genbank accesion numbers and downloads 
-#           their associated fasta formatted sequences. Stores the sequences in a mutiple
-#           sequence fasta file.
+# Descript: A simple program that takes a list of nucleotide genbank accesion numbers and  
+#           downloads the Coding Sequences (CDS) contained within the sequences linked to  
+#  			that accesion. Its then stores these CDSs in a within protien multi-sequence fasta. 
 #
-#           This script requires the Biopython module: http://biopython.org/wiki/Download
+# Requirements: - This script requires the Biopython module: http://biopython.org/wiki/Download
+#               - All accestions must link to regular nucleotide genbank accesions (gene or genome),
+#                 However if a genome is shotgun sequenced you must provide the accestion to its Whole
+#                 Genome Shotgun Sequence project record.
 #  
 # Usage: getGenbankSeqs.py <sequences.txt> <outputName.fasta> <email@mail.com>
 # Example: getGenbankSeqs.py mySeqs.txt mySeqs.fasta JBro@YOLO.com
@@ -26,7 +29,7 @@ from SeqExtract import getProtienAnnotationCSV
 # 1: Checks if in proper number of arguments are passed gives instructions on proper use.
 def argsCheck(numArgs):
 	if len(sys.argv) < numArgs or len(sys.argv) > numArgs:
-		print "Sequence Downloader"
+		print "Coding Sequence"
 		print "By Lee Bergstrand\n"
 		print "Usage: " + sys.argv[0] + " <sequences.txt> <outputName.fasta> <email@mail.com>\n"
 		print "Examples:" + sys.argv[0] + " mySeqs.txt mySeqs.fasta JBro@YOLO.com"
