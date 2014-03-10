@@ -46,7 +46,7 @@ def argsCheck(numArgs):
 		print "and will ban your access! Use the optional email parameter so the NCBI can contact" 
 		print "you if there is a problem."
 		exit(1) # Aborts program. (exit(1) indicates that an error occurred)
-
+#---------------------------------------------------------------------------------------------------------
 # 2: Gets reverse complement of DNA string.
 def reverseCompliment(sequence):
 	sequence.upper() 
@@ -59,7 +59,7 @@ def reverseCompliment(sequence):
 	sequence = sequence[::-1]
 	
 	return sequence	
-
+#---------------------------------------------------------------------------------------------------------
 # 3: Gets 16S DNA as a fasta.
 def extract16sFasta(organism, feature, record):
 	
@@ -73,8 +73,8 @@ def extract16sFasta(organism, feature, record):
 
 	fasta = ">%s\n%s" % (organism + " 16s rRNA ", sequence)
 	return fasta	
-	
-# 3: Gets a list of 16s FASTAs from a genome.
+#---------------------------------------------------------------------------------------------------------
+# 4: Gets a list of 16s FASTAs from a genome.
 def get16sFasta(record):
 	FASTAS = []
 	organism = record.annotations['organism']
