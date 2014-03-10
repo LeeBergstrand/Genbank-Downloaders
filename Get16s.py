@@ -1,9 +1,11 @@
 #!/usr/bin/env python 
 # Created by: Lee Bergstrand 
-# Descript: A simple program that takes a list of nucleotide genbank accession numbers and  
-#           downloads the Coding Sequences (CDS) contained within the sequences linked to  
-#  			that accession. Its then stores these CDSs in a within protein multi-sequence fasta. 
-#           Also creates a CSV file containing some essential info about each CDS.
+# Descript: A simple program that takes a list of nucleotide genbank accession numbers and 
+#			downloads the 16S ribosomal RNA contained within the sequences linked to those 
+#			accessions. Its then stores these 16S genes within a multi-sequence fasta. The  
+#			script also creates a CSV file containing the genomes where no 16S annotation 
+#			was found.
+#			
 #
 # Requirements: - This script requires the Biopython module: http://biopython.org/wiki/Download
 #               - This script requires the SeqExtract module (included in the Bio-Scripts repository)
@@ -14,6 +16,8 @@
 #                 Entrez User Requirements. If the NCBI finds you are abusing their systems, they can 
 #                 and will ban your access! Use the optional email parameter so the NCBI can contact 
 #                 you if there is a problem.
+#
+# Notes: - This script only extracts the first 16S gene found not all the 16S genes.
 #  
 # Usage: getGenbankSeqs.py <sequences.txt> [email@mail.com]
 # Example: getGenbankSeqs.py mySeqs.txt JBro@YOLO.com
@@ -43,7 +47,7 @@ def argsCheck(numArgs):
 		print "and will ban your access! Use the optional email parameter so the NCBI can contact" 
 		print "you if there is a problem."
 		exit(1) # Aborts program. (exit(1) indicates that an error occurred)
-
+#---------------------------------------------------------------------------------------------------------
 # 2: Gets reverse complement of DNA string.
 def reverseCompliment(sequence):
 	sequence.upper() 
@@ -53,25 +57,25 @@ def reverseCompliment(sequence):
 	letters = [basecomplement[base] for base in letters]
 	sequence = "".join(letters)
 	
-	sequence = sequence[::-1]
+	sequence = sequence[::-1] # Reverses sequence using pythons string slice syntax.
 	
 	return sequence	
-
+#---------------------------------------------------------------------------------------------------------
 # 3: Gets 16S DNA as a fasta.
 def extract16sFasta(organism, feature, record):
 	
 	start  = feature.location.nofuzzy_start
 	end    = feature.location.nofuzzy_end
 	strand = feature.location.strand
-	sequence = str(record.seq[start:end])
+	sequence = str(record.seq[start:end]) # Extracts subsequence from the genome according to location of the feature.
 	
-	if strand == -1:
+	if strand == -1: # Converts subsequence to reverse complement if on negitive strand.
 		sequence = reverseCompliment(sequence)
 
 	fasta = ">%s\n%s" % (organism + " 16s rRNA ", sequence)
 	return fasta	
-	
-# 3: Gets a list of 16s FASTAs from a genome.
+#---------------------------------------------------------------------------------------------------------
+# 4: Gets a list of 16s FASTAs from a genome.
 def get16sFasta(record):
 	FASTAS = []
 	organism = record.annotations['organism']
@@ -124,16 +128,16 @@ for sequence in seqRecords:
 		contigRecords = getSeqRecords(contigList) # Extract sequence record object for each contig.
 		for contig in contigRecords:
 			fasta = get16sFasta(contig) # Builds list fasta files.
-			if fasta:
+			if fasta: # If 16S is found.
 				No16s = False
 				SixTeens.append(fasta[0])
-				break
+				break # If 16S is found in one contig break out and skip all the other contigs
 	else: #If accession is a regular genome... 
 		fasta = get16sFasta(sequence) # Builds list fasta files.
 		if fasta:
 			No16s = False
 			SixTeens.append(fasta[0])
-	if No16s == True:
+	if No16s == True: # If not 16S is found add genome to the no 16s found list.
 		No16sGenomeInfo = []
 		No16sGenomeInfo.append(sequence.id)
 		No16sGenomeInfo.append(sequence.annotations["organism"])
@@ -141,7 +145,7 @@ for sequence in seqRecords:
 OutSixTeens = "\n".join(SixTeens)
 
 try:
-	# Attempted to crearte to output file.
+	# Attempted to crearte to output files.
 	outFile = "SixTeenSS.fna"
 	outCSVFile = "NoSixTeenGenomes.csv"
 	print "Writing " + outFile + " to file..."
