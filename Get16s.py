@@ -58,7 +58,7 @@ def reverseCompliment(sequence):
 	return sequence	
 
 # 3: Gets 16S DNA as a fasta.
-def extract16sFasta(organism, SixTeenCount, feature, record):
+def extract16sFasta(organism, feature, record):
 	
 	start  = feature.location.nofuzzy_start
 	end    = feature.location.nofuzzy_end
@@ -68,7 +68,7 @@ def extract16sFasta(organism, SixTeenCount, feature, record):
 	if strand == -1:
 		sequence = reverseCompliment(sequence)
 
-	fasta = ">%s\n%s" % (organism + " 16s rRNA " + str(SixTeenCount), sequence)
+	fasta = ">%s\n%s" % (organism + " 16s rRNA ", sequence)
 	return fasta	
 	
 # 3: Gets a list of 16s FASTAs from a genome.
@@ -77,11 +77,9 @@ def get16sFasta(record):
 	organism = record.annotations['organism']
 	features = record.features
 	for feature in features:
-		SixTeenCount = 0
 		if feature.type == "rRNA":
 			if "16S" in feature.qualifiers["product"][0]:
-				SixTeenCount += 1
-				fasta = extract16sFasta(organism, SixTeenCount, feature, record)
+				fasta = extract16sFasta(organism, feature, record)
 				FASTAS.append(fasta)
 	return FASTAS
 #===========================================================================================================
@@ -111,9 +109,7 @@ except IOError:
 seqList = sequences.splitlines() # Splits string into a list. Each element is a single line from the string.
 
 print "You have listed", len(seqList), "sequences. They are:"
-print sequences + "\n\n"
-
-#No16sFound = {}
+print sequences + "\n"
 
 seqRecords = getSeqRecords(seqList) # Acquires list of sequence record objects from NCBI using the sequence list as reference.
 
@@ -121,7 +117,8 @@ No16sGenomes = []
 SixTeens = []
 for sequence in seqRecords:
 	No16s = True
-	#Checks if the accession leads to a WGSS project. 
+	if "plasmid" in sequence.description.lower(): # If sequence is from a plasmid skip the iteration.
+		continue
 	if isSSProject(sequence) == True: #If accession is a WGSS project... 
 		contigList = extractContigs(sequence.id) # Extract all contig accessions. 
 		contigRecords = getSeqRecords(contigList) # Extract sequence record object for each contig.
@@ -129,15 +126,13 @@ for sequence in seqRecords:
 			fasta = get16sFasta(contig) # Builds list fasta files.
 			if fasta:
 				No16s = False
-				for SixTeen in fasta:
-					SixTeens.append(SixTeen)
+				SixTeens.append(fasta[0])
+				break
 	else: #If accession is a regular genome... 
 		fasta = get16sFasta(sequence) # Builds list fasta files.
 		if fasta:
 			No16s = False
-			for SixTeen in fasta:
-				SixTeens.append(SixTeen)
-
+			SixTeens.append(fasta[0])
 	if No16s == True:
 		No16sGenomeInfo = []
 		No16sGenomeInfo.append(sequence.id)
@@ -165,7 +160,5 @@ try:
 except IOError:	
 	print "Failed to create " + outFile
 	exit(1)	
-	
-
 
 print "Done!"
