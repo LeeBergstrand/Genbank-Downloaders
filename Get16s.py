@@ -1,10 +1,11 @@
 #!/usr/bin/env python 
 # Created by: Lee Bergstrand 
-# Descript: A simple program that takes a list of nucleotide genbank accession numbers and  
-#           downloads the 16S ribosomal RNA contained within the sequences linked to  
-#  			those accessions. Its then stores these 16S in a within protein multi-sequence fasta. 
-#           The script also creates a CSV file containing the genomes form the sequence list where
-#			where no 16S annotation was found.
+# Descript: A simple program that takes a list of nucleotide genbank accession numbers and 
+#			downloads the 16S ribosomal RNA contained within the sequences linked to those 
+#			accessions. Its then stores these 16S genes within a multi-sequence fasta. The  
+#			script also creates a CSV file containing the genomes where no 16S annotation 
+#			was found.
+#			
 #
 # Requirements: - This script requires the Biopython module: http://biopython.org/wiki/Download
 #               - This script requires the SeqExtract module (included in the Bio-Scripts repository)
@@ -56,7 +57,7 @@ def reverseCompliment(sequence):
 	letters = [basecomplement[base] for base in letters]
 	sequence = "".join(letters)
 	
-	sequence = sequence[::-1]
+	sequence = sequence[::-1] # Reverses sequence using pythons string slice syntax.
 	
 	return sequence	
 #---------------------------------------------------------------------------------------------------------
