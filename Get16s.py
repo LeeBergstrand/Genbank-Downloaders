@@ -84,7 +84,8 @@ def get16sFasta(record):
 		if feature.type == "rRNA":
 			if "16S" in feature.qualifiers["product"][0]:
 				fasta = extract16sFasta(organism, feature, record)
-				FASTAS.append(fasta)
+				if len(fasta) > 1000 and len(fasta) < 2000: # Removes partial sequences and realy large sequence do to genbank.
+					FASTAS.append(fasta)
 	return FASTAS
 #===========================================================================================================
 # Main program code:
@@ -146,7 +147,7 @@ OutSixTeens = "\n".join(SixTeens)
 
 try:
 	# Attempted to crearte to output files.
-	outFile = "SixTeenSS.fna"
+	outFile = "SixTeenSSFromGenbank.fna"
 	outCSVFile = "NoSixTeenGenomes.csv"
 	print "Writing " + outFile + " to file..."
 	print "Writing " + outCSVFile + " to file..."
