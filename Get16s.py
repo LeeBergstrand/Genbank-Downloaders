@@ -72,7 +72,7 @@ def extract16sFasta(organismID, feature, record):
 	if strand == -1: # Converts subsequence to reverse complement if on negitive strand.
 		sequence = reverseCompliment(sequence)
 
-	fasta = ">%s\n%s" % (organismID + " 16s rRNA ", sequence)
+	fasta = ">%s\n%s" % (organismID + " 16s rRNA gene", sequence)
 	return fasta	
 #---------------------------------------------------------------------------------------------------------
 # 4: Gets a list of 16s FASTAs from a genome.
