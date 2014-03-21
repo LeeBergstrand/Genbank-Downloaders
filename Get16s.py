@@ -62,7 +62,7 @@ def reverseCompliment(sequence):
 	return sequence	
 #---------------------------------------------------------------------------------------------------------
 # 3: Gets 16S DNA as a fasta.
-def extract16sFasta(organism, feature, record):
+def extract16sFasta(organismID, feature, record):
 	
 	start  = feature.location.nofuzzy_start
 	end    = feature.location.nofuzzy_end
@@ -72,18 +72,18 @@ def extract16sFasta(organism, feature, record):
 	if strand == -1: # Converts subsequence to reverse complement if on negitive strand.
 		sequence = reverseCompliment(sequence)
 
-	fasta = ">%s\n%s" % (organism + " 16s rRNA ", sequence)
+	fasta = ">%s\n%s" % (organismID + " 16s rRNA ", sequence)
 	return fasta	
 #---------------------------------------------------------------------------------------------------------
 # 4: Gets a list of 16s FASTAs from a genome.
-def get16sFasta(record):
+def get16sFasta(sequenceID, record):
 	FASTAS = []
-	organism = record.annotations['organism']
+	organismID = sequenceID
 	features = record.features
 	for feature in features:
 		if feature.type == "rRNA":
 			if "16S" in feature.qualifiers["product"][0]:
-				fasta = extract16sFasta(organism, feature, record)
+				fasta = extract16sFasta(organismID, feature, record)
 				if len(fasta) > 1000 and len(fasta) < 2000: # Removes partial sequences and realy large sequence do to genbank.
 					FASTAS.append(fasta)
 	return FASTAS
@@ -121,6 +121,7 @@ seqRecords = getSeqRecords(seqList) # Acquires list of sequence record objects f
 No16sGenomes = []
 SixTeens = []
 for sequence in seqRecords:
+	sequenceID = sequence.id
 	No16s = True
 	if "plasmid" in sequence.description.lower(): # If sequence is from a plasmid skip the iteration.
 		continue
@@ -128,19 +129,19 @@ for sequence in seqRecords:
 		contigList = extractContigs(sequence.id) # Extract all contig accessions. 
 		contigRecords = getSeqRecords(contigList) # Extract sequence record object for each contig.
 		for contig in contigRecords:
-			fasta = get16sFasta(contig) # Builds list fasta files.
+			fasta = get16sFasta(sequenceID, contig) # Builds list fasta files.
 			if fasta: # If 16S is found.
 				No16s = False
 				SixTeens.append(fasta[0])
 				break # If 16S is found in one contig break out and skip all the other contigs
 	else: #If accession is a regular genome... 
-		fasta = get16sFasta(sequence) # Builds list fasta files.
+		fasta = get16sFasta(sequenceID, sequence) # Builds list fasta files.
 		if fasta:
 			No16s = False
 			SixTeens.append(fasta[0])
 	if No16s == True: # If not 16S is found add genome to the no 16s found list.
 		No16sGenomeInfo = []
-		No16sGenomeInfo.append(sequence.id)
+		No16sGenomeInfo.append(sequenceID)
 		No16sGenomeInfo.append(sequence.annotations["organism"])
 		No16sGenomes.append(No16sGenomeInfo)
 OutSixTeens = "\n".join(SixTeens)
