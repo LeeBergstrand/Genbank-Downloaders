@@ -58,7 +58,6 @@ def reverseCompliment(sequence):
 	sequence = "".join(letters)
 	
 	sequence = sequence[::-1] # Reverses sequence using pythons string slice syntax.
-	
 	return sequence	
 #---------------------------------------------------------------------------------------------------------
 # 3: Gets 16S DNA as a fasta.
@@ -68,11 +67,13 @@ def extract16sFasta(organismID, feature, record):
 	end    = feature.location.nofuzzy_end
 	strand = feature.location.strand
 	sequence = str(record.seq[start:end]) # Extracts subsequence from the genome according to location of the feature.
+	OrganismName = record.annotations["organism"]
 	
 	if strand == -1: # Converts subsequence to reverse complement if on negitive strand.
 		sequence = reverseCompliment(sequence)
 
-	fasta = ">%s\n%s" % (organismID + " 16s rRNA gene", sequence)
+	#fasta = ">%s\n%s" % (organismID + " 16s rRNA gene", sequence)
+	fasta = 
 	return fasta	
 #---------------------------------------------------------------------------------------------------------
 # 4: Gets a list of 16s FASTAs from a genome.
