@@ -72,8 +72,7 @@ def extract16sFasta(organismID, feature, record):
 	if strand == -1: # Converts subsequence to reverse complement if on negitive strand.
 		sequence = reverseCompliment(sequence)
 
-	#fasta = ">%s\n%s" % (organismID + " 16s rRNA gene", sequence)
-	fasta = 
+	fasta = ">%s\n%s" % (organismID, sequence)
 	return fasta	
 #---------------------------------------------------------------------------------------------------------
 # 4: Gets a list of 16s FASTAs from a genome.
@@ -151,19 +150,19 @@ try:
 	# Attempted to crearte to output files.
 	outFile = "SixTeenSSFromGenbank.fna"
 	outCSVFile = "NoSixTeenGenomes.csv"
+	
 	print "Writing " + outFile + " to file..."
-	print "Writing " + outCSVFile + " to file..."
-	
-	writeFile = open(outFile, "w") 	
-	csvFile = open(outCSVFile, "w") 	
-	CSVWriter = csv.writer(csvFile)
-	
+	writeFile = open(outFile, "w")
 	writeFile.write(OutSixTeens)
-	for genome in No16sGenomes:
-		CSVWriter.writerow(genome)
-	
 	writeFile.close()
-	csvFile.close()
+	 	
+	if No16sGenomes:
+		print "Writing " + outCSVFile + " to file..."
+		csvFile = open(outCSVFile, "w") 	
+		CSVWriter = csv.writer(csvFile)
+		for genome in No16sGenomes:
+			CSVWriter.writerow(genome)
+		csvFile.close()
 except IOError:	
 	print "Failed to create " + outFile
 	exit(1)	
