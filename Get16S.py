@@ -3,7 +3,7 @@
 # Descript: A simple program that takes a list of nucleotide genbank accession numbers and 
 #			downloads the 16S ribosomal RNA contained within the sequences linked to those 
 #			accessions. Its then stores these 16S genes within a multi-sequence fasta file. The  
-#			script also creates a CSV file containing the genomes where no 16S annotation 
+#			script also creates a CSV file containing the genomes for which no 16S annotation 
 #			was found.
 #			
 #
