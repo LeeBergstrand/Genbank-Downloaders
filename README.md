@@ -1,7 +1,7 @@
 Genbank-Downloaders
 ===================
 
-A series of small Bio-Python scripts for downloading sequence data off NCBI's Genbank.
+A series of small Biopython scripts for downloading sequence data off NCBI's Genbank.
 
 Here is a short description of each script:
 
