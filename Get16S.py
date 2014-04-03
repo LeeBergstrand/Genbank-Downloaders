@@ -19,8 +19,8 @@
 #
 # Notes: - This script only extracts the first 16S gene found not all the 16S genes.
 #  
-# Usage: getGenbankSeqs.py <sequences.txt> [email@mail.com]
-# Example: getGenbankSeqs.py mySeqs.txt JBro@YOLO.com
+# Usage: Get16S.py <sequences.txt> [email@mail.com]
+# Example: Get16S.py mySeqs.txt JBro@YOLO.com
 #----------------------------------------------------------------------------------------
 #===========================================================================================================
 #Imports:
