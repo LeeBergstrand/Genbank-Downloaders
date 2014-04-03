@@ -1,6 +1,6 @@
 #!/usr/bin/env python 
 # Created by: Lee Bergstrand 
-# Descript: A module that contains functions for extraction and genbank records. 
+# Descript: A module that contains functions for extraction of genbank records. 
 #
 # Requirements: - This module requires the Biopython module: http://biopython.org/wiki/Download
 #------------------------------------------------------------------------------------------------------------
