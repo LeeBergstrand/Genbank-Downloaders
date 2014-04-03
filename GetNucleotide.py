@@ -1,8 +1,9 @@
 #!/usr/bin/env python 
 # Created by: Lee Bergstrand 
 # Descript: A simple program that takes a list of genbank nucleotide accession numbers and downloads 
-#           the associated sequences. Its stores genes or complete genomes as a nucleotide fasta file. 
-#           For shotgun sequenced data it stores the contigs in a multiple sequence nucleotide fasta file. 
+#           their associated sequences. It then stores the genes or complete genomes as a multi-squence  
+#           nucleotide fasta file. For shotgun sequenced data it stores the contigs in a multiple 
+#	    sequence nucleotide fasta file. 
 #
 # Requirements: - This script requires the Biopython module: http://biopython.org/wiki/Download
 #               - This script requires the SeqExtract module (included in the Bio-Scripts repository)
