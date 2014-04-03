@@ -1,12 +1,12 @@
 #!/usr/bin/env python 
 # Created by: Lee Bergstrand 
 # Descript: A simple program that takes a list of nucleotide genbank accession numbers and 
-#			downloads the Coding Sequences (CDS) contained within the sequences linked to  
-#  			those accessions. It then stores these CDSs within a protein multi-sequence fasta.
-#			The script also creates a CSV file containing some essential info about each CDS.
+#			downloads the Coding Sequences (CDS) contained within the sequences linked by  
+#  			those accessions. It then stores these CDSs within a  multi-sequence protein fasta
+#			file. The script also creates a CSV file containing some essential info about each CDS.
 #
 # Requirements: - This script requires the Biopython module: http://biopython.org/wiki/Download
-#               - This script requires the SeqExtract module (included in the Bio-Scripts repository)
+#               - This script requires the SeqExtract module (included in the Genbank-Downloaders repository)
 #               - All accessions must link to regular nucleotide genbank records (gene or genome),
 #                 however if a genome is shotgun sequenced you must provide the accession to its Whole
 #                 Genome Shotgun Sequence Project record.
