@@ -15,8 +15,8 @@
 #                 and will ban your access! Use the optional email parameter so the NCBI can contact 
 #                 you if there is a problem.
 #  
-# Usage: getGenbankSeqs.py <sequences.txt> [email@mail.com]
-# Example: getGenbankSeqs.py mySeqs.txt JBro@YOLO.com
+# Usage: Get16S.py <sequences.txt> [email@mail.com]
+# Example:Get16S.py mySeqs.txt JBro@YOLO.com
 #----------------------------------------------------------------------------------------
 #===========================================================================================================
 #Imports:
