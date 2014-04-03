@@ -2,13 +2,13 @@
 # Created by: Lee Bergstrand 
 # Descript: A simple program that takes a list of nucleotide genbank accession numbers and 
 #			downloads the 16S ribosomal RNA contained within the sequences linked to those 
-#			accessions. Its then stores these 16S genes within a multi-sequence fasta. The  
+#			accessions. Its then stores these 16S genes within a multi-sequence fasta file. The  
 #			script also creates a CSV file containing the genomes where no 16S annotation 
 #			was found.
 #			
 #
 # Requirements: - This script requires the Biopython module: http://biopython.org/wiki/Download
-#               - This script requires the SeqExtract module (included in the Bio-Scripts repository)
+#               - This script requires the SeqExtract module (included in the Genbank-Downloaders repository)
 #               - All accessions must link to regular nucleotide genbank records (genome),
 #                 however if a genome is shotgun sequenced you must provide the accession to its Whole
 #                 Genome Shotgun Sequence Project record.
