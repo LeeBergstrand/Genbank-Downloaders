@@ -6,7 +6,6 @@
 #			script also creates a CSV file containing the genomes for which no 16S annotation 
 #			was found.
 #			
-#
 # Requirements: - This script requires the Biopython module: http://biopython.org/wiki/Download
 #               - This script requires the SeqExtract module (included in the Genbank-Downloaders repository)
 #               - All accessions must link to regular nucleotide genbank records (genome),
