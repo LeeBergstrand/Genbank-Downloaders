@@ -1,9 +1,8 @@
 #!/usr/bin/env python 
 # Created by: Lee Bergstrand 
-# Descript: A simple program that takes a list of genbank nucleotide accession numbers and downloads 
-#           their associated sequences. It then stores the genes or complete genomes as a nucleotide
-#           fasta file. For shotgun sequenced data it stores the contigs in a multiple sequence
-#	    	nucleotide fasta file. 
+# Descript: A simple program that takes a list of genbank protein accession numbers and downloads 
+#           their associated sequences. It then stores the genes or complete genomes as a single 
+#           peptide fasta file. 
 #
 # Requirements: - This script requires the Biopython module: http://biopython.org/wiki/Download
 #               - This script requires the SeqExtract module (included in the Bio-Scripts repository)
@@ -15,8 +14,8 @@
 #                 and will ban your access! Use the optional email parameter so the NCBI can contact 
 #                 you if there is a problem.
 #  
-# Usage: GetNucleotide.py <sequences.txt> [email@mail.com]
-# Example: GetNucleotide.py mySeqs.txt JBro@YOLO.com
+# Usage: GetProtein.py <sequences.txt> [email@mail.com]
+# Example: GetProtein.py mySeqs.txt JBro@YOLO.com
 #----------------------------------------------------------------------------------------
 #===========================================================================================================
 #Imports:
@@ -73,29 +72,19 @@ print sequences + "\n\n"
 	
 seqRecords = getSeqRecords(seqList) # Acquires list of sequence record objects from NCBI using the sequence list as reference.
 
-for sequence in seqRecords:
-	outFile = sequence.id + ".fna"
-	try:
-		# Attempted to crearte to output file.
-		writeFile = open(outFile, "w") 	
-		print "Writing " + outFile + " to file..."
-		
-		# Checks if the accession leads to a WGSS project. 
-		# If accession is a WGSS project... 
-		if isSSProject(sequence) == True:
-			contigList = extractContigs(sequence.id) # Extract all contig accessions. 
-			contigRecords = getSeqRecords(contigList) # Extract sequence record object for each contig.
-			for contig in contigRecords:
-				writeFile.write(contig.format("fasta")) # Write each contig to the same file in fasta format.
-		# If accession is a regular genome... 
-		else:	
-			writeFile.write(sequence.format("fasta")) # Write genome as fasta to file
-		writeFile.close()
-	except IOError:
-		print "Failed to create " + outFile
-		exit(1)	
+outFile = inFile + ".faa"
+try:
+	# Attempted to crearte to output file.
+	writeFile = open(outFile, "w") 	
+	print "Writing " + outFile + " to file..."
+	for sequence in seqRecords:
+		writeFile.write(sequence.format("fasta")) # Write genome as fasta to file.
+	writeFile.close()	
+except IOError:
+	print "Failed to create " + outFile
+	exit(1)	
 	
-print "Done!"
+print "Done!" 
 
 
 
