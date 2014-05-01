@@ -14,7 +14,7 @@
 #                 and will ban your access! Use the optional email parameter so the NCBI can contact 
 #                 you if there is a problem.
 #  
-# Usage: GetProtein.py <sequences.txt> [email@mail.com]
+# Usage: GetProtein.py <sequences.faa> [email@mail.com]
 # Example: GetProtein.py mySeqs.txt JBro@YOLO.com
 #----------------------------------------------------------------------------------------
 #===========================================================================================================
