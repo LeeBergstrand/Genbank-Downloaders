@@ -41,7 +41,7 @@ def argsCheck(numArgs):
 		print "Entrez User Requirements. If the NCBI finds you are abusing their systems, they can" 
 		print "and will ban your access! Use the optional email parameter so the NCBI can contact" 
 		print "you if there is a problem."
-		exit(1) # Aborts program. (exit(1) indicates that an error occurred)
+		sys.exit(1) # Aborts program. (exit(1) indicates that an error occurred)
 #===========================================================================================================
 # Main program code:
 	
@@ -64,7 +64,7 @@ try:
 		newFile.close()
 except IOError:
 	print "Failed to open " + inFile
-	exit(1)
+	sys.exit(1)
 
 seqList = sequences.splitlines() # Splits string into a list. Each element is a single line from the string.
 
@@ -93,7 +93,7 @@ for sequence in seqRecords:
 		writeFile.close()
 	except IOError:
 		print "Failed to create " + outFile
-		exit(1)	
+		sys.exit(1)	
 	
 print "Done!"
 
