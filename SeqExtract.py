@@ -7,6 +7,7 @@
 #============================================================================================================
 # Imports and Setup:
 
+import sys
 import re
 from Bio import SeqIO
 from Bio import Entrez
@@ -30,7 +31,7 @@ def getSeqRecords(seqList):
 		handle.close() # Closes handle since it is no longer needed.
 	except IOError:
 		print "Failed to connect to NCBI server. "
-		exit(1)
+		sys.exit(1)
 	return SeqRecords
 #------------------------------------------------------------------------------------------------------------
 # 3: When passed a sequence record object returns an array of fasta strings for each annotation.
