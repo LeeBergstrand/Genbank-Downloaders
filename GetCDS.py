@@ -100,12 +100,14 @@ for sequence in seqRecords:
 				for row in csvRows:
 					CSVWriter.writerow(row)
 		#If accession is a regular genome... 
-		else:	
+		else:
+			OrganismGenomeLength = len(sequence.seq) # Gets Genome Length
 			fasta = getProtienAnnotationFasta(sequence) # Builds list fasta files.
 			csvRows = getProtienAnnotationCSV(sequence) # Builds list of csv rows.
 			for annotation in fasta:
 				writeFile.write(annotation)	
 			for row in csvRows:
+				row.append(OrganismGenomeLength) # Appends genome length to the rest of the csv file.
 				CSVWriter.writerow(row)	
 		writeFile.close()
 		csvFile.close()
