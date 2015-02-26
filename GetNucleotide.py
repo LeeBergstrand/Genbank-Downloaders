@@ -1,6 +1,6 @@
 #!/usr/bin/env python 
 # Created by: Lee Bergstrand 
-# Descript: A simple program that takes a list of genbank nucleotide accession numbers and downloads 
+# Description: A simple program that takes a list of genbank nucleotide accession numbers and downloads
 #           their associated sequences. It then stores the genes or complete genomes as a nucleotide
 #           fasta file. For shotgun sequenced data it stores the contigs in a multiple sequence
 #	    	nucleotide fasta file. 
@@ -17,17 +17,18 @@
 #  
 # Usage: GetNucleotide.py <sequences.txt> [email@mail.com]
 # Example: GetNucleotide.py mySeqs.txt JBro@YOLO.com
-#----------------------------------------------------------------------------------------
-#===========================================================================================================
-#Imports:
+# ----------------------------------------------------------------------------------------
+# ===========================================================================================================
+# Imports:
 	
 import sys
 from SeqExtract import entrezEmail
 from SeqExtract import getSeqRecords
 from SeqExtract import isSSProject
 from SeqExtract import extractContigs
-#===========================================================================================================
+# ===========================================================================================================
 # Functions:
+
 
 # 1: Checks if in proper number of arguments are passed gives instructions on proper use.
 def argsCheck(numArgs):
@@ -42,7 +43,7 @@ def argsCheck(numArgs):
 		print "and will ban your access! Use the optional email parameter so the NCBI can contact" 
 		print "you if there is a problem."
 		sys.exit(1) # Aborts program. (exit(1) indicates that an error occurred)
-#===========================================================================================================
+# ===========================================================================================================
 # Main program code:
 	
 # House keeping...
@@ -66,38 +67,33 @@ except IOError:
 	print "Failed to open " + inFile
 	sys.exit(1)
 
-seqList = sequences.splitlines() # Splits string into a list. Each element is a single line from the string.
+seqList = sequences.splitlines()  # Splits string into a list. Each element is a single line from the string.
 
 print "You have listed", len(seqList), "sequences. They are:"
 print sequences + "\n\n"
 	
-seqRecords = getSeqRecords(seqList) # Acquires list of sequence record objects from NCBI using the sequence list as reference.
+seqRecords = getSeqRecords(seqList)  # Gets sequence record objects from NCBI using the sequence list as reference.
 
 for sequence in seqRecords:
 	outFile = sequence.id + ".fna"
 	try:
-		# Attempted to crearte to output file.
+		# Attempted to create to output file.
 		writeFile = open(outFile, "w") 	
 		print "Writing " + outFile + " to file..."
 		
 		# Checks if the accession leads to a WGSS project. 
 		# If accession is a WGSS project... 
-		if isSSProject(sequence) == True:
-			contigList = extractContigs(sequence.id) # Extract all contig accessions. 
-			contigRecords = getSeqRecords(contigList) # Extract sequence record object for each contig.
+		if isSSProject(sequence):
+			contigList = extractContigs(sequence.id)  # Extract all contig accessions.
+			contigRecords = getSeqRecords(contigList)  # Extract sequence record object for each contig.
 			for contig in contigRecords:
-				writeFile.write(contig.format("fasta")) # Write each contig to the same file in fasta format.
+				writeFile.write(contig.format("fasta"))  # Write each contig to the same file in fasta format.
 		# If accession is a regular genome... 
 		else:	
-			writeFile.write(sequence.format("fasta")) # Write genome as fasta to file
+			writeFile.write(sequence.format("fasta"))  # Write genome as fasta to file
 		writeFile.close()
 	except IOError:
 		print "Failed to create " + outFile
 		sys.exit(1)	
 	
 print "Done!"
-
-
-
-
-	

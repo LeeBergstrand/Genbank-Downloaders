@@ -1,6 +1,6 @@
 #!/usr/bin/env python 
 # Created by: Lee Bergstrand 
-# Descript: A simple program that takes a list of nucleotide genbank accession numbers and 
+# Description: A simple program that takes a list of nucleotide genbank accession numbers and
 #			downloads the Coding Sequences (CDS) contained within the sequences linked by  
 #  			those accessions. It then stores these CDSs within a multi-sequence protein fasta
 #			file. The script also creates a CSV file containing some essential info about each CDS.
@@ -17,9 +17,9 @@
 #  
 # Usage: Get16S.py <sequences.txt> [email@mail.com]
 # Example:Get16S.py mySeqs.txt JBro@YOLO.com
-#----------------------------------------------------------------------------------------
-#===========================================================================================================
-#Imports:
+# ----------------------------------------------------------------------------------------
+# ===========================================================================================================
+# Imports:
 	
 import sys
 import csv
@@ -29,8 +29,9 @@ from SeqExtract import isSSProject
 from SeqExtract import extractContigs
 from SeqExtract import getProtienAnnotationFasta
 from SeqExtract import getProtienAnnotationCSV
-#===========================================================================================================
+# ===========================================================================================================
 # Functions:
+
 
 # 1: Checks if in proper number of arguments are passed gives instructions on proper use.
 def argsCheck(numArgs):
@@ -45,7 +46,7 @@ def argsCheck(numArgs):
 		print "and will ban your access! Use the optional email parameter so the NCBI can contact" 
 		print "you if there is a problem."
 		sys.exit(1) # Aborts program. (exit(1) indicates that an error occurred)
-#===========================================================================================================
+# ===========================================================================================================
 # Main program code:
 	
 # House keeping...
@@ -54,7 +55,7 @@ entrezEmail(sys.argv[2]) # Sets up arguments email require for genbank file extr
 	
 # Stores file one for input checking.
 print ">> Opening sequence list..."
-inFile  = sys.argv[1]
+inFile = sys.argv[1]
 
 # File extension check
 if not inFile.endswith(".txt"):
@@ -69,45 +70,45 @@ except IOError:
 	print "Failed to open " + inFile
 	sys.exit(1)
 
-seqList = sequences.splitlines() # Splits string into a list. Each element is a single line from the string.
+seqList = sequences.splitlines()  # Splits string into a list. Each element is a single line from the string.
 
 print "You have listed", len(seqList), "sequences. They are:"
 print sequences + "\n\n"
 	
-seqRecords = getSeqRecords(seqList) # Acquires list of sequence record objects from NCBI using the sequence list as reference.
+seqRecords = getSeqRecords(seqList)  # Gets sequence record objects from NCBI using the sequence list as reference.
 		
 for sequence in seqRecords:
 	outFile = sequence.id + ".faa"
-	outCSV  = sequence.id + ".csv"
+	outCSV = sequence.id + ".csv"
 	try:
-		# Attempted to crearte to output file.
+		# Attempted to create to output file.
 		writeFile = open(outFile, "w") 	
 		print "Writing " + outFile + " to file..."
 		csvFile = open(outCSV, "w") 	
 		CSVWriter = csv.writer(csvFile)
 		print "Writing " + outCSV + " to file..."
 		
-		#Checks if the accession leads to a WGSS project. 
-		#If accession is a WGSS project... 
-		if isSSProject(sequence) == True:
-			contigList = extractContigs(sequence.id) # Extract all contig accessions. 
-			contigRecords = getSeqRecords(contigList) # Extract sequence record object for each contig.
+		# Checks if the accession leads to a WGSS project.
+		# If accession is a WGSS project...
+		if isSSProject(sequence):
+			contigList = extractContigs(sequence.id)  # Extract all contig accessions.
+			contigRecords = getSeqRecords(contigList)  # Extract sequence record object for each contig.
 			for contig in contigRecords:
-				fasta = getProtienAnnotationFasta(contig) # Builds list fasta files.
-				csvRows = getProtienAnnotationCSV(contig) # Builds list of csv rows.
+				fasta = getProtienAnnotationFasta(contig)  # Builds list fasta files.
+				csvRows = getProtienAnnotationCSV(contig)  # Builds list of csv rows.
 				for annotation in fasta:
 					writeFile.write(annotation)	
 				for row in csvRows:
 					CSVWriter.writerow(row)
-		#If accession is a regular genome... 
+		# If accession is a regular genome...
 		else:
-			OrganismGenomeLength = len(sequence.seq) # Gets Genome Length
-			fasta = getProtienAnnotationFasta(sequence) # Builds list fasta files.
-			csvRows = getProtienAnnotationCSV(sequence) # Builds list of csv rows.
+			OrganismGenomeLength = len(sequence.seq)  # Gets Genome Length
+			fasta = getProtienAnnotationFasta(sequence)  # Builds list fasta files.
+			csvRows = getProtienAnnotationCSV(sequence)  # Builds list of csv rows.
 			for annotation in fasta:
 				writeFile.write(annotation)	
 			for row in csvRows:
-				row.append(OrganismGenomeLength) # Appends genome length to the rest of the csv file.
+				row.append(OrganismGenomeLength)  # Appends genome length to the rest of the csv file.
 				CSVWriter.writerow(row)	
 		writeFile.close()
 		csvFile.close()

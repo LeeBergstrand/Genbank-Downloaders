@@ -1,6 +1,6 @@
 #!/usr/bin/env python 
 # Created by: Lee Bergstrand 
-# Descript: A simple program that takes a list of genbank geneome accession numbers and finds the name
+# Description: A simple program that takes a list of genbank geneome accession numbers and finds the name
 #			of the taxa that these accession numbers represent.
 #
 # Requirements: - This script requires the Biopython module: http://biopython.org/wiki/Download
@@ -15,18 +15,17 @@
 #  
 # Usage: GetOrganism.py <sequences.txt> [email@mail.com]
 # Example: GetOrganism.py mySeqs.txt JBro@YOLO.com
-#----------------------------------------------------------------------------------------
-#===========================================================================================================
-#Imports:
-	
+# ----------------------------------------------------------------------------------------
+# ===========================================================================================================
+# Imports:
+
 import sys
 from Bio import Entrez
 from SeqExtract import entrezEmail
-from SeqExtract import getSeqRecords
-from SeqExtract import isSSProject
-from SeqExtract import extractContigs
-#===========================================================================================================
+
+# ===========================================================================================================
 # Functions:
+
 
 # 1: Checks if in proper number of arguments are passed gives instructions on proper use.
 def argsCheck(numArgs):
@@ -40,8 +39,8 @@ def argsCheck(numArgs):
 		print "Entrez User Requirements. If the NCBI finds you are abusing their systems, they can" 
 		print "and will ban your access! Use the optional email parameter so the NCBI can contact" 
 		print "you if there is a problem."
-		sys.exit(1) # Aborts program. (exit(1) indicates that an error occurred)
-#===========================================================================================================
+		sys.exit(1)  # Aborts program. (exit(1) indicates that an error occurred)
+# ===========================================================================================================
 # Main program code:
 	
 # House keeping...
@@ -50,7 +49,7 @@ entrezEmail(sys.argv[2]) # Sets up arguments email require for genbank file extr
 	
 # Stores file one for input checking.
 print "Opening sequence list..."
-inFile  = sys.argv[1]
+inFile = sys.argv[1]
 
 # File extension check
 if not inFile.endswith(".txt"):
@@ -65,7 +64,7 @@ except IOError:
 	print "Failed to open " + inFile
 	sys.exit(1)
 
-seqList = sequences.splitlines() # Splits string into a list. Each element is a single line from the string.
+seqList = sequences.splitlines()  # Splits string into a list. Each element is a single line from the string.
 
 print "You have listed", len(seqList), "sequences. They are:"
 
@@ -89,4 +88,3 @@ for seq in seqList:
 		TaxaName = TaxonomySummary[0]["ScientificName"]
 		
 		print seq + ": " + TaxaName
-		 
