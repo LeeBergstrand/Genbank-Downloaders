@@ -42,7 +42,7 @@ def getSeqRecords(seqList):
 
 # ------------------------------------------------------------------------------------------------------------
 # 3: When passed a sequence record object returns an array of fasta strings for each annotation.
-def getProtienAnnotationFasta(seqRecord):
+def getProteinAnnotationFasta(seqRecord):
 	fasta = []
 	features = seqRecord.features  # Each sequence has a list (called features) that stores seqFeature objects.
 	for feature in features:  # For each feature on the sequence
@@ -64,7 +64,7 @@ def getProtienAnnotationFasta(seqRecord):
 
 # ------------------------------------------------------------------------------------------------------------
 # 4: Passed a sequence record object returns a list of csv rows. Each row is list containing info for each annotation.
-def getProtienAnnotationCSV(seqRecord):
+def getProteinAnnotationCSV(seqRecord):
 	csvRowSet = []  # Master list of all rows.
 	for feature in seqRecord.features:
 		if feature.type == "CDS":
