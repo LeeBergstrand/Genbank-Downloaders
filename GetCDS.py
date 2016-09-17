@@ -27,8 +27,8 @@ from SeqExtract import entrezEmail
 from SeqExtract import getSeqRecords
 from SeqExtract import isSSProject
 from SeqExtract import extractContigs
-from SeqExtract import getProtienAnnotationFasta
-from SeqExtract import getProtienAnnotationCSV
+from SeqExtract import getProteinAnnotationFasta
+from SeqExtract import getProteinAnnotationCSV
 # ===========================================================================================================
 # Functions:
 
@@ -94,8 +94,8 @@ for sequence in seqRecords:
 			contigList = extractContigs(sequence.id)  # Extract all contig accessions.
 			contigRecords = getSeqRecords(contigList)  # Extract sequence record object for each contig.
 			for contig in contigRecords:
-				fasta = getProtienAnnotationFasta(contig)  # Builds list fasta files.
-				csvRows = getProtienAnnotationCSV(contig)  # Builds list of csv rows.
+				fasta = getProteinAnnotationFasta(contig)  # Builds list fasta files.
+				csvRows = getProteinAnnotationCSV(contig)  # Builds list of csv rows.
 				for annotation in fasta:
 					writeFile.write(annotation)	
 				for row in csvRows:
@@ -103,8 +103,8 @@ for sequence in seqRecords:
 		# If accession is a regular genome...
 		else:
 			OrganismGenomeLength = len(sequence.seq)  # Gets Genome Length
-			fasta = getProtienAnnotationFasta(sequence)  # Builds list fasta files.
-			csvRows = getProtienAnnotationCSV(sequence)  # Builds list of csv rows.
+			fasta = getProteinAnnotationFasta(sequence)  # Builds list fasta files.
+			csvRows = getProteinAnnotationCSV(sequence)  # Builds list of csv rows.
 			for annotation in fasta:
 				writeFile.write(annotation)	
 			for row in csvRows:
