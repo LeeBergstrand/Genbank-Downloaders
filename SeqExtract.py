@@ -28,10 +28,10 @@ def entrezEmail(email):
 
 # ------------------------------------------------------------------------------------------------------------
 # 2: When passed an array of accessions from NCBI it returns a list of sequence objects matching those accessions.
-def getSeqRecords(seqList):
+def getSeqRecords(seqList, database_type="nucleotide"):
     try:
         print("Requesting sequence data from genbank...")
-        handle = Entrez.efetch(db="protein", id=seqList, rettype="gb",
+        handle = Entrez.efetch(db=database_type, id=seqList, rettype="gb",
                                retmode="genbank")  # Gets records and stores them.
         print("Starting download...")
         SeqRecords = list(SeqIO.parse(handle, "genbank"))  # Creates a list of SeqRecord objects from genbank files e.
@@ -101,12 +101,12 @@ def getProteinAnnotationCSV(seqRecord):
 # ------------------------------------------------------------------------------------------------------------
 # 5: Checks if genome is a WGSS project. 
 def isSSProject(sequence):
-    m = WGSSProjectRegex.match(sequence.id)
-    if m:
-        matched = True
-    else:
-        matched = False
-    return matched
+    is_ssp = False
+
+    if sequence.annotations.get('wgs'):
+        is_ssp = True
+
+    return is_ssp
 
 
 # ------------------------------------------------------------------------------------------------------------
