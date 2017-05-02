@@ -20,99 +20,104 @@
 # ----------------------------------------------------------------------------------------
 # ===========================================================================================================
 # Imports:
-	
-import sys
+
 import csv
+import sys
+
 from SeqExtract import entrezEmail
+from SeqExtract import extractContigs
+from SeqExtract import getProteinAnnotationCSV
+from SeqExtract import getProteinAnnotationFasta
 from SeqExtract import getSeqRecords
 from SeqExtract import isSSProject
-from SeqExtract import extractContigs
-from SeqExtract import getProteinAnnotationFasta
-from SeqExtract import getProteinAnnotationCSV
+
+
 # ===========================================================================================================
 # Functions:
 
 
 # 1: Checks if in proper number of arguments are passed gives instructions on proper use.
 def argsCheck(numArgs):
-	if len(sys.argv) < numArgs or len(sys.argv) > numArgs:
-		print "Coding Sequence Downloader"
-		print "By Lee Bergstrand\n"
-		print "Usage: " + sys.argv[0] + " <sequences.txt> [email@mail.com]"
-		print "Examples: " + sys.argv[0] + " mySeqs.txt JBro@YOLO.com\n"
-		print "Please Note:"
-		print "Before using this script to access the NCBI's online resources please read the NCBI's" 
-		print "Entrez User Requirements. If the NCBI finds you are abusing their systems, they can" 
-		print "and will ban your access! Use the optional email parameter so the NCBI can contact" 
-		print "you if there is a problem."
-		sys.exit(1) # Aborts program. (exit(1) indicates that an error occurred)
+    if len(sys.argv) < numArgs or len(sys.argv) > numArgs:
+        print("Coding Sequence Downloader")
+        print("By Lee Bergstrand\n")
+        print("Usage: " + sys.argv[0] + " <sequences.txt> [email@mail.com]")
+        print("Examples: " + sys.argv[0] + " mySeqs.txt JBro@YOLO.com\n")
+        print("Please Note:")
+        print("Before using this script to access the NCBI's online resources please read the NCBI's")
+        print("Entrez User Requirements. If the NCBI finds you are abusing their systems, they can")
+        print("and will ban your access! Use the optional email parameter so the NCBI can contact")
+        print("you if there is a problem.")
+        sys.exit(1)  # Aborts program. (exit(1) indicates that an error occurred)
+
+
 # ===========================================================================================================
 # Main program code:
-	
+
 # House keeping...
-argsCheck(3) # Checks if the number of arguments are correct.
-entrezEmail(sys.argv[2]) # Sets up arguments email require for genbank file extraction.
-	
+argsCheck(3)  # Checks if the number of arguments are correct.
+entrezEmail(sys.argv[2])  # Sets up arguments email require for genbank file extraction.
+
 # Stores file one for input checking.
-print ">> Opening sequence list..."
+print(">> Opening sequence list...")
 inFile = sys.argv[1]
 
 # File extension check
 if not inFile.endswith(".txt"):
-	print "[Warning] " + inFile + " may not be a txt file!"
+    print("[Warning] " + inFile + " may not be a txt file!")
 
 # Reads sequence file list and stores it as a string object. Safely closes file.try:
-try:	
-	with open(inFile,"r") as newFile:
-		sequences = newFile.read()
-		newFile.close()
+try:
+    with open(inFile, "r") as newFile:
+        sequences = newFile.read()
+        newFile.close()
 except IOError:
-	print "Failed to open " + inFile
-	sys.exit(1)
+    print("Failed to open " + inFile)
+    sys.exit(1)
 
 seqList = sequences.splitlines()  # Splits string into a list. Each element is a single line from the string.
 
-print "You have listed", len(seqList), "sequences. They are:"
-print sequences + "\n\n"
-	
+print("You have listed", len(seqList), "sequences. They are:")
+print(sequences + "\n\n")
+
 seqRecords = getSeqRecords(seqList)  # Gets sequence record objects from NCBI using the sequence list as reference.
-		
+
 for sequence in seqRecords:
-	outFile = sequence.id + ".faa"
-	outCSV = sequence.id + ".csv"
-	try:
-		# Attempted to create to output file.
-		writeFile = open(outFile, "w") 	
-		print "Writing " + outFile + " to file..."
-		csvFile = open(outCSV, "w") 	
-		CSVWriter = csv.writer(csvFile)
-		print "Writing " + outCSV + " to file..."
-		
-		# Checks if the accession leads to a WGSS project.
-		# If accession is a WGSS project...
-		if isSSProject(sequence):
-			contigList = extractContigs(sequence.id)  # Extract all contig accessions.
-			contigRecords = getSeqRecords(contigList)  # Extract sequence record object for each contig.
-			for contig in contigRecords:
-				fasta = getProteinAnnotationFasta(contig)  # Builds list fasta files.
-				csvRows = getProteinAnnotationCSV(contig)  # Builds list of csv rows.
-				for annotation in fasta:
-					writeFile.write(annotation)	
-				for row in csvRows:
-					CSVWriter.writerow(row)
-		# If accession is a regular genome...
-		else:
-			OrganismGenomeLength = len(sequence.seq)  # Gets Genome Length
-			fasta = getProteinAnnotationFasta(sequence)  # Builds list fasta files.
-			csvRows = getProteinAnnotationCSV(sequence)  # Builds list of csv rows.
-			for annotation in fasta:
-				writeFile.write(annotation)	
-			for row in csvRows:
-				row.append(OrganismGenomeLength)  # Appends genome length to the rest of the csv file.
-				CSVWriter.writerow(row)	
-		writeFile.close()
-		csvFile.close()
-	except IOError:
-		print "Failed to create " + outFile
-		sys.exit(1)	
-print "Done!"
+    outFile = sequence.id + ".faa"
+    outCSV = sequence.id + ".csv"
+    try:
+        # Attempted to create to output file.
+        writeFile = open(outFile, "w")
+        print("Writing " + outFile + " to file...")
+        csvFile = open(outCSV, "w")
+        CSVWriter = csv.writer(csvFile)
+        print("Writing " + outCSV + " to file...")
+
+        # Checks if the accession leads to a WGSS project.
+        # If accession is a WGSS project...
+        if isSSProject(sequence):
+            contigList = extractContigs(sequence.id)  # Extract all contig accessions.
+            contigRecords = getSeqRecords(contigList)  # Extract sequence record object for each contig.
+            for contig in contigRecords:
+                fasta = getProteinAnnotationFasta(contig)  # Builds list fasta files.
+                csvRows = getProteinAnnotationCSV(contig)  # Builds list of csv rows.
+                for annotation in fasta:
+                    writeFile.write(annotation)
+                for row in csvRows:
+                    CSVWriter.writerow(row)
+        # If accession is a regular genome...
+        else:
+            OrganismGenomeLength = len(sequence.seq)  # Gets Genome Length
+            fasta = getProteinAnnotationFasta(sequence)  # Builds list fasta files.
+            csvRows = getProteinAnnotationCSV(sequence)  # Builds list of csv rows.
+            for annotation in fasta:
+                writeFile.write(annotation)
+            for row in csvRows:
+                row.append(OrganismGenomeLength)  # Appends genome length to the rest of the csv file.
+                CSVWriter.writerow(row)
+        writeFile.close()
+        csvFile.close()
+    except IOError:
+        print("Failed to create " + outFile)
+        sys.exit(1)
+print("Done!")
