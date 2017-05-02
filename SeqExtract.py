@@ -27,15 +27,15 @@ def entrezEmail(email):
 # 2: When passed an array of accessions from NCBI it returns a list of sequence objects matching those accessions.
 def getSeqRecords(seqList):
 	try:
-		print "Requesting sequence data from genbank..."
+		print("Requesting sequence data from genbank...")
 		handle = Entrez.efetch(db="protein", id=seqList, rettype="gb",
 		                       retmode="genbank")  # Gets records and stores them.
-		print "Starting download..."
+		print("Starting download...")
 		SeqRecords = list(SeqIO.parse(handle, "genbank"))  # Creates a list of SeqRecord objects from genbank files e.
-		print "Download Complete."
+		print("Download Complete.")
 		handle.close()  # Closes handle since it is no longer needed.
 	except IOError:
-		print "Failed to connect to NCBI server. "
+		print("Failed to connect to NCBI server. ")
 		sys.exit(1)
 	return SeqRecords
 
