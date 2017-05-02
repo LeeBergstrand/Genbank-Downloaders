@@ -31,7 +31,7 @@ def entrezEmail(email):
 def getSeqRecords(seqList):
     try:
         print("Requesting sequence data from genbank...")
-        handle = Entrez.efetch(db="protein", id=seqList, rettype="gb",
+        handle = Entrez.efetch(db="nucleotide", id=seqList, rettype="gb",
                                retmode="genbank")  # Gets records and stores them.
         print("Starting download...")
         SeqRecords = list(SeqIO.parse(handle, "genbank"))  # Creates a list of SeqRecord objects from genbank files e.
@@ -101,12 +101,12 @@ def getProteinAnnotationCSV(seqRecord):
 # ------------------------------------------------------------------------------------------------------------
 # 5: Checks if genome is a WGSS project. 
 def isSSProject(sequence):
-    m = WGSSProjectRegex.match(sequence.id)
-    if m:
-        matched = True
-    else:
-        matched = False
-    return matched
+    is_ssp = False
+
+    if sequence.annotations.get('wgs'):
+        is_ssp = True
+
+    return is_ssp
 
 
 # ------------------------------------------------------------------------------------------------------------
