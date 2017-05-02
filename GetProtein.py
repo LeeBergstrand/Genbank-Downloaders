@@ -74,7 +74,7 @@ seqList = sequences.splitlines()  # Splits string into a list. Each element is a
 print("You have listed", len(seqList), "sequences. They are:")
 print(sequences + "\n\n")
 
-seqRecords = getSeqRecords(seqList)  # Gets sequence record objects from NCBI using the sequence list as reference.
+seqRecords = getSeqRecords(seqList, database_type="protein")  # Gets sequence record objects from NCBI using the sequence list as reference.
 
 outFile = inFile + ".faa"
 try:
